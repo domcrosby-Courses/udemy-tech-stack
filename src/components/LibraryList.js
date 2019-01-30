@@ -1,20 +1,32 @@
 // imrc
 import React, { Component } from 'react';
+// imrn
+//
+import { FlatList, Text } from 'react-native';
 // crr
 import { connect } from 'react-redux';
-import { Text } from 'react-native';
+import { ListItem } from '../Components';
 
 // ccsr
 class LibraryList extends Component {
   state = {};
 
+  renderItem(library) {
+    return <ListItem library={library} />;
+  }
+
   render() {
-    console.log(this.props);
-    return <Text>Yo</Text>;
+    return (
+      <FlatList
+        data={this.props.libraries}
+        renderItem={this.renderItem}
+        keyExtractor={library => library.id}
+      />
+    );
   }
 }
 
-// Allows access to the store to view state
+// Allows access to the store to view state and passes as props to class above
 const mapStateToProps = state => ({ libraries: state.libraries });
 
 export default connect(mapStateToProps)(LibraryList);
