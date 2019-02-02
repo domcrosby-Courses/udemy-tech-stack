@@ -2,25 +2,31 @@
 import React, { Component } from 'react';
 // imrn
 //
-import { FlatList, Text } from 'react-native';
+import { FlatList } from 'react-native';
 // crr
 import { connect } from 'react-redux';
-import { ListItem } from '../Components';
+import PropTypes from 'prop-types';
+import ListItem from './ListItem';
+
+const propTypes = {};
+
+const defaultProps = {};
 
 // ccsr
 class LibraryList extends Component {
   state = {};
 
   renderItem(library) {
-    return <ListItem library={library} />;
+    return <ListItem library={library.item} />;
   }
 
   render() {
+    const { libraries } = this.props;
     return (
       <FlatList
-        data={this.props.libraries}
+        data={libraries}
         renderItem={this.renderItem}
-        keyExtractor={library => library.id}
+        keyExtractor={library => library.id.toString()}
       />
     );
   }

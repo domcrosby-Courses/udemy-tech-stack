@@ -9,9 +9,8 @@ import { Header, LibraryList } from './Components';
 const App = () => (
   // Provider is called and creates a new store with the reducers
   <Provider store={createStore(reducers)}>
-    <View>
+    <View style={{ flex: 1 }}>
       <Header headerText="Tech Stack" />
-      <Text>Hello</Text>
       <LibraryList />
     </View>
   </Provider>
