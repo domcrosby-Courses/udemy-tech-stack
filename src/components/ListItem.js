@@ -1,28 +1,51 @@
 // imrc
 import React, { Component } from 'react';
-import { Text } from 'react-native';
+import { Text, TouchableWithoutFeedback, View } from 'react-native';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import CardSection from './CardSection';
+// you shouldn't really do this
+import * as actions from '../actions';
 
 const propTypes = {
   library: PropTypes.shape({
     id: PropTypes.number.isRequired,
     title: PropTypes.string,
     description: PropTypes.string
-  }).isRequired
+  }).isRequired,
+  selectedLibraryId: PropTypes.number,
+  selectLibrary: PropTypes.func.isRequired
 };
 
-const defaultProps = {};
+const defaultProps = { selectedLibraryId: 1 };
 
 // ccsr
-export default class ListItem extends Component {
+class ListItem extends Component {
+  renderDescription() {
+    const { library, selectedLibraryId } = this.props;
+    if (library.id === selectedLibraryId) {
+      return <Text>{library.description}</Text>;
+    }
+    return null;
+  }
+
   render() {
-    const { library } = this.props;
+    const { library, selectLibrary } = this.props;
+    const { title, id } = library;
     const { titleStyle } = styles;
     return (
-      <CardSection>
-        <Text style={titleStyle}>{library.title}</Text>
-      </CardSection>
+      <TouchableWithoutFeedback
+        onPress={() => {
+          selectLibrary(id);
+        }}
+      >
+        <View>
+          <CardSection>
+            <Text style={titleStyle}>{title}</Text>
+          </CardSection>
+          {this.renderDescription()}
+        </View>
+      </TouchableWithoutFeedback>
     );
   }
 }
@@ -37,3 +60,11 @@ const styles = {
 
 ListItem.propTypes = propTypes;
 ListItem.defaultProps = defaultProps;
+
+const mapStateToProps = state => ({ selectedLibraryId: state.selectedLibraryId });
+
+// this passes all actions as props and also allows for automatic dispatching of actions
+export default connect(
+  mapStateToProps,
+  actions
+)(ListItem);
