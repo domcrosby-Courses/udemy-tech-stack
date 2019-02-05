@@ -1,6 +1,6 @@
 // imrc
 import React, { Component } from 'react';
-import { Text, TouchableWithoutFeedback, View } from 'react-native';
+import { Text, TouchableWithoutFeedback, View, LayoutAnimation } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import CardSection from './CardSection';
@@ -13,18 +13,27 @@ const propTypes = {
     title: PropTypes.string,
     description: PropTypes.string
   }).isRequired,
-  selectedLibraryId: PropTypes.number,
+  expanded: PropTypes.bool.isRequired,
   selectLibrary: PropTypes.func.isRequired
 };
 
-const defaultProps = { selectedLibraryId: 1 };
+const defaultProps = {};
 
 // ccsr
 class ListItem extends Component {
+  componentWillUpdate() {
+    // note that this needs work in order to work on android
+    LayoutAnimation.spring();
+  }
+
   renderDescription() {
-    const { library, selectedLibraryId } = this.props;
-    if (library.id === selectedLibraryId) {
-      return <Text>{library.description}</Text>;
+    const { library, expanded } = this.props;
+    if (expanded) {
+      return (
+        <CardSection>
+          <Text style={{ flex: 1 }}>{library.description}</Text>
+        </CardSection>
+      );
     }
     return null;
   }
@@ -61,7 +70,11 @@ const styles = {
 ListItem.propTypes = propTypes;
 ListItem.defaultProps = defaultProps;
 
-const mapStateToProps = state => ({ selectedLibraryId: state.selectedLibraryId });
+// passing a function allows it to change on state change and pass as prop
+const mapStateToProps = (state, ownProps) => {
+  const expanded = ownProps.library.id === state.selectedLibraryId;
+  return { expanded };
+};
 
 // this passes all actions as props and also allows for automatic dispatching of actions
 export default connect(
